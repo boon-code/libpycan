@@ -1,8 +1,2 @@
-cffi==1.17.1
-msgpack==1.0.8
-packaging==24.1
-pkg_resources==0.0.0
-pycparser==2.22
-python-can==4.4.2
-typing_extensions==4.12.2
-wrapt==1.16.0
+cffi>=1.17.1
+python-can>=4.4.2
