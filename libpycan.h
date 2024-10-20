@@ -13,6 +13,9 @@
 #define PYCAN_RESULT_NULL_ARG    3
 #define PYCAN_RESULT_NO_FRAME    4
 #define PYCAN_RESULT_INCOMPLETE  5
+#define PYCAN_RESULT_READ_ERROR  6
+#define PYCAN_RESULT_WRITE_ERROR 7
+#define PYCAN_RESULT_FAIL        8
 
 /**************************************************
  * public structs
