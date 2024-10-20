@@ -33,6 +33,7 @@ int main(void)
 		frame.data[6] = 6;
 		frame.data[7] = 7;
 	}
+	frame.can_id += 1; // easier to see
 
 	ret = CanTryWrite(&frame, 1, 2.0, &n_frames);
 	printf("CanTryWrite result: %d\n", ret);
