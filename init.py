@@ -1,5 +1,6 @@
 from _libpycan import ffi, lib
 import can
+from pathlib import Path
 
 
 _bus = None
@@ -20,7 +21,10 @@ def CanInitDefault():
     global _bus
     if _bus is not None:
         return lib.PYCAN_RESULT_ALREADY
-    _bus = can.Bus()
+    cfg_path = Path('can.ini')
+    if cfg_path.is_file():
+        can.rc = can.util.load_config(path=cfg_path)
+    _bus = can.Bus(single_handle=True)
     return lib.PYCAN_RESULT_OK
 
 
