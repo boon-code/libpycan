@@ -14,12 +14,28 @@ int main(void)
 	struct canfd_frame frame;
 	size_t n_frames = 0;
 
-	ret = CanInit("virtual", "test-channel", 500000U);
+	ret = CanInitDefault();
 	printf("CanInit result: %d\n", ret);
 	assert((ret == PYCAN_RESULT_OK) && "not init");
 
 	ret = CanRead(&frame, 1, 2.0, &n_frames);
 	printf("CanRead result: %d\n", ret);
+
+	if (ret != PYCAN_RESULT_OK) {
+		frame.can_id = 0x100;
+		frame.len = 8;
+		frame.data[0] = 0;
+		frame.data[1] = 1;
+		frame.data[2] = 2;
+		frame.data[3] = 3;
+		frame.data[4] = 4;
+		frame.data[5] = 5;
+		frame.data[6] = 6;
+		frame.data[7] = 7;
+	}
+
+	ret = CanTryWrite(&frame, 1, 2.0, &n_frames);
+	printf("CanTryWrite result: %d\n", ret);
 
 	return EXIT_SUCCESS;
 }
