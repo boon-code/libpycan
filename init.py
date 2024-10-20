@@ -42,7 +42,33 @@ def CanDeinit():
 def CanRead(buffer, buffer_size, timeout, n_frames_read):
     if buffer == ffi.NULL:
         return lib.PYCAN_RESULT_NULL_ARG
-    return lib.PYCAN_RESULT_NO_FRAME
+    if _bus is None:
+        return lib.PYCAN_RESULT_NOT_INIT
+    count = 0
+    t = None
+    if timeout > 0.0:
+        t = timeout
+    try:
+        for i in range(buffer_size):
+            mag = _bus.recv(timeout=t)
+            if msg is None:
+                break
+            # TODO: map ext, rtr, err bits here
+            buffer[i].can_id = msg.arbitration_id
+            buffer[i].len = msg.dlc
+            buffer[i].flags = 0
+            for j in range(msg.dlc):
+                buffer[i].data[j] = msg.data[j]
+            count += 1
+    except can.CanError:
+        return lib.PYCAN_RESULT_READ_ERROR
+    except:
+        return lib.PYCAN_RESULT_FAIL
+    if n_frames_read != ffi.NULL:
+        n_frames_read[0] = count
+    if count < buffer_size:
+        return lib.PYCAN_RESULT_INCOMPLETE
+    return lib.PYCAN_RESULT_OK
 
 
 @ffi.def_extern()
