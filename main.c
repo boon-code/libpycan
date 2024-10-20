@@ -38,5 +38,9 @@ int main(void)
 	ret = CanTryWrite(&frame, 1, 2.0, &n_frames);
 	printf("CanTryWrite result: %d\n", ret);
 
+	frame.can_id += 1;
+	ret = CanWrite(&frame, 1);
+	printf("CanWrite result: %d\n", ret);
+
 	return EXIT_SUCCESS;
 }
