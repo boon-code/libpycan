@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <assert.h>
 #include "libpycan.h"
 
 int main(void)
@@ -13,7 +14,11 @@ int main(void)
 	struct canfd_frame frame;
 	size_t n_frames = 0;
 
-	ret = CanRead(&frame, 1, 0.5, &n_frames);
+	ret = CanInit("virtual", "test-channel", 500000U);
+	printf("CanInit result: %d\n", ret);
+	assert((ret == PYCAN_RESULT_OK) && "not init");
+
+	ret = CanRead(&frame, 1, 2.0, &n_frames);
 	printf("CanRead result: %d\n", ret);
 
 	return EXIT_SUCCESS;
