@@ -103,9 +103,9 @@ def _to_message(buffer):
     return can.Message(
         # TODO: map ext, rtr, err bits here
         arbitration_id=buffer.can_id,
-        is_extended=False,
+        is_extended_id=False,
         dlc=buffer.len,
-        data=bytes(buffer.data),
+        data=buffer.data[0:buffer.len],
     )
 
 
@@ -142,14 +142,8 @@ def CanTryWrite(buffer, n_frames, timeout, n_frames_written):
     if timeout > 0.0:
         t = timeout
     try:
-        for i in range(buffer_size):
-            msg = can.Message(
-                # TODO: map ext, rtr, err bits here
-                arbitration_id=buffer[i].can_id,
-                is_extended=False,
-                dlc=buffer[i].len,
-                data=bytes(buffer[i]),
-            )
+        for i in range(n_frames):
+            msg = _to_message(buffer[i])
             _bus.send(msg, timeout=t)
             count += 1
     except can.CanError:
@@ -158,6 +152,6 @@ def CanTryWrite(buffer, n_frames, timeout, n_frames_written):
         return lib.PYCAN_RESULT_FAIL
     if n_frames_written != ffi.NULL:
         n_frames_written[0] = count
-    if count < buffer_size:
+    if count < n_frames:
         return lib.PYCAN_RESULT_INCOMPLETE
     return lib.PYCAN_RESULT_OK
