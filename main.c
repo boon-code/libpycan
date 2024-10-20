@@ -42,5 +42,8 @@ int main(void)
 	ret = CanWrite(&frame, 1);
 	printf("CanWrite result: %d\n", ret);
 
+	ret = CanDeinit();
+	printf("CanDeinit result: %d\n", ret);
+
 	return EXIT_SUCCESS;
 }
