@@ -10,7 +10,7 @@ def _to_utf8(c_buffer):
     return ffi.string(c_buffer).decode('utf-8')
 
 
-def _to_message(buffer):
+def _to_message(buffer, is_rx=False):
     is_ext = ((buffer.can_id & lib.CAN_EFF_FLAG) != 0)
     is_rtr = ((buffer.can_id & lib.CAN_RTR_FLAG) != 0)
     is_err = ((buffer.can_id & lib.CAN_ERR_FLAG) != 0)
@@ -27,6 +27,7 @@ def _to_message(buffer):
         is_extended_id=is_ext,
         is_remote_frame=is_rtr,
         is_error_frame=is_err,
+        is_rx=is_rx,
         dlc=buffer.len,
         data=data,
     )
@@ -148,7 +149,7 @@ def CanWrite(buffer, n_frames):
         return lib.PYCAN_RESULT_NOT_INIT
     try:
         for i in range(n_frames):
-            msg = _to_message(buffer[i])
+            msg = _to_message(buffer[i], is_rx=False)
             while True:
                 try:
                     _bus.send(msg)
@@ -173,7 +174,7 @@ def CanTryWrite(buffer, n_frames, timeout, n_frames_written):
         t = timeout
     try:
         for i in range(n_frames):
-            msg = _to_message(buffer[i])
+            msg = _to_message(buffer[i], is_rx=False)
             _bus.send(msg, timeout=t)
             count += 1
     except can.CanError:
