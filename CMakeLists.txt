@@ -19,6 +19,7 @@ add_custom_target(copy_pycan
     COMMAND "${CMAKE_COMMAND}" -E echo "Build and copy libpycan.so"
     COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/build.sh"
     COMMAND "${CMAKE_COMMAND}" -E copy "${CMAKE_CURRENT_SOURCE_DIR}/libpycan.so" "${CMAKE_CURRENT_BINARY_DIR}/libpycan.so"
+    COMMAND "${CMAKE_COMMAND}" -E copy "${CMAKE_CURRENT_SOURCE_DIR}/virtual-can.ini" "${CMAKE_CURRENT_BINARY_DIR}/can.ini"
     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
 )
 
