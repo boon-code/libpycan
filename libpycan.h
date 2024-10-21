@@ -5,6 +5,11 @@
  * public definitions
  *************************************************/
 
+/* Note:
+ *   CAN definitions and data structures are taken from the Linux Kernel
+ *   from include/uapi/linux/can.h
+ */
+
 #define CANFD_MAX_DLEN 64
 
 #define CAN_EFF_FLAG 0x80000000U /* EFF/SFF is set in the MSB */
