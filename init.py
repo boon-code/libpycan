@@ -84,12 +84,7 @@ def CanRead(buffer, buffer_size, timeout, n_frames_read):
             msg = _bus.recv(timeout=t)
             if msg is None:
                 break
-            # TODO: map ext, rtr, err bits here
-            buffer[i].can_id = msg.arbitration_id
-            buffer[i].len = msg.dlc
-            buffer[i].flags = 0
-            for j in range(msg.dlc):
-                buffer[i].data[j] = msg.data[j]
+            _set_c_frame(msg, buffer[i])
             count += 1
     except can.CanError:
         return lib.PYCAN_RESULT_READ_ERROR
@@ -123,6 +118,26 @@ def _to_message(buffer):
         dlc=buffer.len,
         data=data,
     )
+
+
+def _set_c_frame(msg, buffer):
+    flags = 0
+    if msg.is_extended_id:
+        flags |= lib.CAN_EFF_FLAG
+    if msg.is_remote_frame:
+        flags |= lib.CAN_RTR_FLAG
+    if msg.is_error_frame:
+        flags |= lib.CAN_ERR_FLAG
+    can_id = msg.arbitration_id & lib.CAN_EFF_MASK
+    assert can_id == msg.arbitration_id, "identity"
+    if not msg.is_extended_id:
+        can_id = msg.arbitration_id & lib.CAN_SFF_MASK
+    buffer.can_id = can_id | flags
+    buffer.len = msg.dlc
+    buffer.flags = 0
+    if not msg.is_remote_frame:
+        for i in range(msg.dlc):
+            buffer.data[i] = msg.data[i]
 
 
 @ffi.def_extern()
