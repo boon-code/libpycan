@@ -110,7 +110,6 @@ def _to_message(buffer):
     if is_err:
         can_id = buffer.can_id & lib.CAN_ERR_MASK
     return can.Message(
-        # TODO: map ext, rtr, err bits here
         arbitration_id=can_id,
         is_extended_id=is_ext,
         is_remote_frame=is_rtr,
