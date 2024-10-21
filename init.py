@@ -103,12 +103,25 @@ def CanRead(buffer, buffer_size, timeout, n_frames_read):
 
 
 def _to_message(buffer):
+    is_ext = ((buffer.can_id & lib.CAN_EFF_FLAG) != 0)
+    is_rtr = ((buffer.can_id & lib.CAN_RTR_FLAG) != 0)
+    is_err = ((buffer.can_id & lib.CAN_ERR_FLAG) != 0)
+    data = buffer.data[0:buffer.len]
+    if is_rtr:
+        data = bytes()
+    can_id = buffer.can_id & lib.CAN_EFF_MASK
+    if not is_ext:
+        can_id = buffer.can_id & lib.CAN_SFF_MASK
+    if is_err:
+        can_id = buffer.can_id & lib.CAN_ERR_MASK
     return can.Message(
         # TODO: map ext, rtr, err bits here
-        arbitration_id=buffer.can_id,
-        is_extended_id=False,
+        arbitration_id=can_id,
+        is_extended_id=is_ext,
+        is_remote_frame=is_rtr,
+        is_error_frame=is_err,
         dlc=buffer.len,
-        data=buffer.data[0:buffer.len],
+        data=data,
     )
 
 

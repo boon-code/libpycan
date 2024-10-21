@@ -7,6 +7,14 @@
 
 #define CANFD_MAX_DLEN 64
 
+#define CAN_EFF_FLAG 0x80000000U /* EFF/SFF is set in the MSB */
+#define CAN_RTR_FLAG 0x40000000U /* remote transmission request */
+#define CAN_ERR_FLAG 0x20000000U /* error message frame */
+
+#define CAN_SFF_MASK 0x000007FFU /* standard frame format (SFF) */
+#define CAN_EFF_MASK 0x1FFFFFFFU /* extended frame format (EFF) */
+#define CAN_ERR_MASK 0x1FFFFFFFU /* omit EFF, RTR, ERR flags */
+
 #define PYCAN_RESULT_OK          0
 #define PYCAN_RESULT_NOT_INIT    1
 #define PYCAN_RESULT_ALREADY     2
