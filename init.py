@@ -21,10 +21,13 @@ def CanInitDefault():
     global _bus
     if _bus is not None:
         return lib.PYCAN_RESULT_ALREADY
-    cfg_path = Path('can.ini')
-    if cfg_path.is_file():
-        can.rc = can.util.load_config(path=cfg_path)
-    _bus = can.Bus(single_handle=True)
+    try:
+        cfg_path = Path('can.ini')
+        if cfg_path.is_file():
+            can.rc = can.util.load_config(path=cfg_path)
+        _bus = can.Bus(single_handle=True)
+    except:
+        return lib.PYCAN_RESULT_FAIL
     return lib.PYCAN_RESULT_OK
 
 
